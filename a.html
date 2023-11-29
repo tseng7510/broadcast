@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body,
+      html {
+        margin: 0;
+        height: 100vh;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .box {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        cursor: pointer;
+      }
+      .boxA {
+        background: blue;
+      }
+      .boxB {
+        top: 100px;
+        background: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box boxA"></div>
+    <div class="box boxB"></div>
+
+    <script>
+      let screenPositionX = 0;
+      let screenPositionY = 0;
+      let windowGap = 0;
+
+      //boxA
+      const boxA = document.querySelector('.boxA');
+      let boxAMoveX = 0;
+      let boxAMoveY = 0;
+      let checkBoxA = false;
+      let boxAMouseDownPositionX = 0;
+      let boxAMouseDownPositionY = 0;
+
+      boxA.addEventListener('mousedown', (e) => {
+        checkBoxA = true;
+        boxAMouseDownPositionX = e.layerX;
+        boxAMouseDownPositionY = e.layerY;
+      });
+
+      const boxAInfo = new BroadcastChannel('boxAInfo');
+      const boxAInfo2 = new BroadcastChannel('boxAInfo2');
+      window.addEventListener('mousemove', (e) => {
+        if (checkBoxA) {
+          boxAMoveX = e.clientX - boxAMouseDownPositionX;
+          boxAMoveY = e.clientY - boxAMouseDownPositionY;
+          boxA.style.top = `${boxAMoveY}px`;
+          boxA.style.left = `${boxAMoveX}px`;
+          boxAInfo.postMessage({
+            ww: window.innerWidth,
+            x: boxAMoveX,
+            y: boxAMoveY,
+            spx: screenPositionX,
+          });
+        }
+      });
+
+      boxAInfo2.onmessage = (e) => {
+        boxAX = e.data.x;
+        boxAY = e.data.y;
+        windowGap = e.data.spx - screenPositionX - e.data.ww;
+        boxA.style.top = `${boxAY}px`;
+        boxA.style.left = `${boxAX + window.innerWidth + windowGap}px`;
+      };
+      //boxA
+      //boxB
+      const boxB = document.querySelector('.boxB');
+      let boxBMoveX = 0;
+      let boxBMoveY = 0;
+      let checkBoxB = false;
+      let boxBMouseDownPositionX = 0;
+      let boxBMouseDownPositionY = 0;
+
+      boxB.addEventListener('mousedown', (e) => {
+        checkBoxB = true;
+        boxBMouseDownPositionX = e.layerX;
+        boxBMouseDownPositionY = e.layerY;
+      });
+
+      const boxBInfo = new BroadcastChannel('boxBInfo');
+      const boxBInfo2 = new BroadcastChannel('boxBInfo2');
+      window.addEventListener('mousemove', (e) => {
+        if (checkBoxB) {
+          boxBMoveX = e.clientX - boxBMouseDownPositionX;
+          boxBMoveY = e.clientY - boxBMouseDownPositionY;
+          boxB.style.top = `${boxBMoveY}px`;
+          boxB.style.left = `${boxBMoveX}px`;
+          boxBInfo.postMessage({
+            ww: window.innerWidth,
+            x: boxBMoveX,
+            y: boxBMoveY,
+            spx: screenPositionX,
+          });
+        }
+      });
+
+      boxBInfo2.onmessage = (e) => {
+        windowGap = e.data.spx - screenPositionX - e.data.ww;
+        console.log(windowGap);
+        boxB.style.top = `${e.data.y}px`;
+        boxB.style.left = `${e.data.x + window.innerWidth + windowGap}px`;
+      };
+      //boxB
+
+      window.addEventListener('mouseup', (e) => {
+        checkBoxA = false;
+        checkBoxB = false;
+      });
+
+      function checkWindowPosition() {
+        screenPositionX = window.screenX;
+        window.requestAnimationFrame(checkWindowPosition);
+      }
+      window.requestAnimationFrame(checkWindowPosition);
+    </script>
+  </body>
+</html>
