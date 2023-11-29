@@ -71,7 +71,7 @@
       boxAInfo2.onmessage = (e) => {
         boxAX = e.data.x;
         boxAY = e.data.y;
-        windowGap = e.data.spx - screenPositionX - e.data.ww;
+        windowGap = e.data.spx - screenPositionX - window.innerWidth;
         boxA.style.top = `${boxAY}px`;
         boxA.style.left = `${boxAX + window.innerWidth + windowGap}px`;
       };
@@ -108,9 +108,9 @@
       });
 
       boxBInfo2.onmessage = (e) => {
-        windowGap = e.data.spx - screenPositionX - e.data.ww;
+        windowGap = e.data.spx - screenPositionX - window.innerWidth;
         boxB.style.top = `${e.data.y}px`;
-        boxB.style.left = `${e.data.x + window.innerWidth + windowGap}px`;
+        boxB.style.left = `${e.data.x + window.innerWidth - windowGap}px`;
       };
       //boxB
 
