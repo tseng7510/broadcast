@@ -109,7 +109,6 @@
 
       boxBInfo2.onmessage = (e) => {
         windowGap = e.data.spx - screenPositionX - e.data.ww;
-        console.log(windowGap);
         boxB.style.top = `${e.data.y}px`;
         boxB.style.left = `${e.data.x + window.innerWidth + windowGap}px`;
       };
